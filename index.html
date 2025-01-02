@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="weather-app">
+    <div class="header">
+      <h1 id="city">Paris</h1>
+      <div class="city-selector">
+        <label for="city-select">Choose a city:</label>
+        <select id="city-select">
+          <option value="Paris">Paris</option>
+          <option value="London">London</option>
+          <option value="New York">New York</option>
+          <option value="Tokyo">Tokyo</option>
+          <!-- Add more cities as needed -->
+        </select>
+      </div>
+      <p id="time">Tuesday 9:00 AM</p>
+    </div>
+    <div class="weather-card">
+      <div class="weather-icon">
+        <img src="cloud.png" alt="Cloud Icon" id="weather-icon">
+        <h2 id="temperature">55°C</h2>
+      </div>
+      <div class="weather-info">
+        <p id="condition">Rain Shower</p>
+      </div>
+    </div>
+    <div class="details">
+      <div>
+        <p>Sunrise</p>
+        <p id="sunrise">6:00</p>
+      </div>
+      <div>
+        <p>Wind</p>
+        <p id="wind">10 m/s</p>
+      </div>
+      <div>
+        <p>Temperature</p>
+        <p id="temp-min-max">49°C</p>
+      </div>
+      <div>
+        <p>Air Quality Index</p>
+        <p id="aqi">Good</p>
+      </div>
+      <div>
+        <p>Weather Alerts</p>
+        <p id="alerts">No alerts</p>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

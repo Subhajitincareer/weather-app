@@ -1,0 +1,87 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #e8f5fd;
+}
+
+.weather-app {
+  text-align: center;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 300px;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.weather-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.weather-icon {
+  position: relative;
+}
+
+.weather-icon img {
+  width: 80px;
+  height: 80px;
+}
+
+.weather-icon h2 {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 1.5rem; /* Reduced font size */
+  color: #333;
+}
+
+.weather-info {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.weather-info p {
+  margin: 0;
+  font-size: 0.9rem; /* Reduced font size */
+  color: #777;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-size: 0.8rem; /* Reduced font size */
+  color: #555;
+}
+
+.details div {
+  width: 48%;
+  margin-bottom: 10px;
+}
+
+.details div p:first-child {
+  font-weight: bold;
+  margin: 0;
+}
+
+.details div p:last-child {
+  margin: 0;
+}
+
+.city-selector {
+  margin-bottom: 10px;
+}
