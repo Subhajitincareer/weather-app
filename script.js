@@ -15,8 +15,16 @@ const fetchWeatherData = async (city = "Paris") => {
   const apiKey = "efa6902cb41987f4af06b3d3d36ac4ce"; // Directly use the API key
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
-  try {
-    const weatherResponse = await fetch(weatherUrl);
+  
+    const weatherResponse =async () => {
+      try {
+        await fetch(weatherUrl);
+        alert("success!");
+      } catch (error) {
+        
+      }
+      
+    } 
     const weatherData = await weatherResponse.json();
 
     // Update the UI with fetched weather data
