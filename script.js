@@ -1,3 +1,4 @@
+// Grab DOM elements globally
 const cityElement = document.getElementById("city");
 const timeElement = document.getElementById("time");
 const temperatureElement = document.getElementById("temperature");
@@ -10,60 +11,117 @@ const citySelectElement = document.getElementById("city-select");
 const aqiElement = document.getElementById("aqi");
 const alertsElement = document.getElementById("alerts");
 
-// Fetch weather data from OpenWeatherMap API
-const fetchWeatherData = async (city = "Paris") => {
-  const apiKey = "efa6902cb41987f4af06b3d3d36ac4ce"; // Directly use the API key
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+const API_KEY = "efa6902cb41987f4af06b3d3d36ac4ce";
 
-  
-    const weatherResponse =async () => {
-      try {
-        await fetch(weatherUrl);
-        alert("success!");
-      } catch (error) {
-        
-      }
-      
-    } 
+// Map numeric AQI to descriptive text
+const aqiDescriptions = {
+  1: "Good",
+  2: "Fair",
+  3: "Moderate",
+  4: "Poor",
+  5: "Very Poor",
+};
+
+// Helper function to format time in HH:MM AM/PM
+function formatTime(date) {
+  return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+// Fetch and update weather data
+async function fetchWeatherData(city = "Paris") {
+  try {
+    // Show loading states
+    temperatureElement.textContent = "...";
+    conditionElement.textContent = "Loading...";
+    alertsElement.textContent = "";
+    aqiElement.textContent = "";
+    sunriseElement.textContent = "--";
+    windElement.textContent = "--";
+    tempMinMaxElement.textContent = "-- / --";
+    timeElement.textContent = "Loading time...";
+
+    // Fetch weather data
+    const weatherResponse = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${API_KEY}&units=metric`
+    );
+    if (!weatherResponse.ok) throw new Error("City not found or API error");
     const weatherData = await weatherResponse.json();
 
-    // Update the UI with fetched weather data
+    // Update weather info
     cityElement.textContent = weatherData.name;
-    timeElement.textContent = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    // Calculate local time in city using timezone offset
+    const currentUtcTime = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
+    const cityLocalTime = new Date(currentUtcTime + weatherData.timezone * 1000);
+    timeElement.textContent = cityLocalTime.toLocaleString(undefined, {
+      weekday: "long",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+
     temperatureElement.textContent = `${Math.round(weatherData.main.temp)}°C`;
-    conditionElement.textContent = weatherData.weather[0].description;
-    sunriseElement.textContent = new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    // Capitalize first letter of condition
+    const conditionText = weatherData.weather[0].description;
+    conditionElement.textContent = conditionText.charAt(0).toUpperCase() + conditionText.slice(1);
+
+    sunriseElement.textContent = formatTime(new Date(weatherData.sys.sunrise * 1000));
     windElement.textContent = `${weatherData.wind.speed} m/s`;
     tempMinMaxElement.textContent = `${Math.round(weatherData.main.temp_min)}°C / ${Math.round(weatherData.main.temp_max)}°C`;
 
-    // Change weather icon dynamically
+    // Update weather icon with HTTPS to prevent mixed content errors
     const iconCode = weatherData.weather[0].icon;
-    weatherIcon.src = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    weatherIcon.alt = conditionElement.textContent;
 
-    // Fetch AQI data
-    const aqiUrl = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${apiKey}`;
-    const aqiResponse = await fetch(aqiUrl);
-    const aqiData = await aqiResponse.json();
-    aqiElement.textContent = `AQI: ${aqiData.list[0].main.aqi}`;
-
-    // Fetch Weather Alerts data
-    const alertsUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${apiKey}`;
-    const alertsResponse = await fetch(alertsUrl);
-    const alertsData = await alertsResponse.json();
-    if (alertsData.alerts && alertsData.alerts.length > 0) {
-      alertsElement.textContent = alertsData.alerts[0].description;
+    // Fetch Air Quality Index data
+    const aqiURL = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&appid=${API_KEY}`;
+    const aqiResponse = await fetch(aqiURL);
+    if (aqiResponse.ok) {
+      const aqiData = await aqiResponse.json();
+      const aqiValue = aqiData.list?.[0]?.main?.aqi || null;
+      aqiElement.textContent = `Air Quality: ${aqiDescriptions[aqiValue] || "Unknown"}`;
     } else {
-      alertsElement.textContent = "No alerts";
+      aqiElement.textContent = "Air Quality: Data unavailable";
+    }
+
+    // Fetch Weather Alerts - One Call API (exclude unnecessary parts to save quota)
+    const alertsUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${weatherData.coord.lat}&lon=${weatherData.coord.lon}&exclude=current,minutely,hourly,daily&appid=${API_KEY}`;
+    const alertsResponse = await fetch(alertsUrl);
+    if (alertsResponse.ok) {
+      const alertsData = await alertsResponse.json();
+      if (alertsData.alerts && alertsData.alerts.length > 0) {
+        alertsElement.textContent = alertsData.alerts[0].description;
+      } else {
+        alertsElement.textContent = "No alerts";
+      }
+    } else {
+      alertsElement.textContent = "Alerts data unavailable";
     }
   } catch (error) {
-    console.error("Error fetching weather data:", error);
+    console.error("Error:", error);
+    cityElement.textContent = "Error loading data";
+    timeElement.textContent = "--";
+    temperatureElement.textContent = "--";
+    conditionElement.textContent = "Unavailable";
+    sunriseElement.textContent = "--";
+    windElement.textContent = "--";
+    tempMinMaxElement.textContent = "-- / --";
+    aqiElement.textContent = "--";
+    alertsElement.textContent = "--";
+    weatherIcon.src = "cloud.png";
+    weatherIcon.alt = "Weather icon unavailable";
   }
-};
+}
 
-// Call the function to fetch weather data on page load
-fetchWeatherData();
+// Fetch data when page loads
+window.addEventListener("DOMContentLoaded", () => {
+  fetchWeatherData(citySelectElement.value);
+});
 
-// Add event listener to city select dropdown
+// Change city handler
 citySelectElement.addEventListener("change", (event) => {
-  fetchWeatherData(event.target.value);
+  const city = event.target.value;
+  fetchWeatherData(city);
 });

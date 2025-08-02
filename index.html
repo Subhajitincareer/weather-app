@@ -1,61 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather App</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Weather App</title>
+
+  <!-- Tailwind CSS CDN (for production, use compiled CSS) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #E2ECF9, #FFFFFF);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="weather-app">
-    <div class="header">
-      <h1 id="city">Paris</h1>
-      <div class="city-selector">
-        <label for="city-select">Choose a city:</label>
-        <select id="city-select">
-          <option value="Paris">Paris</option>
-          <option value="London">London</option>
-          <option value="New York">New York</option>
-          <option value="Tokyo">Tokyo</option>
-          <option value="Delhi">Delhi</option>
-          
-          <!-- Add more cities as needed -->
-        </select>
+
+  <main class="bg-white rounded-3xl shadow-xl w-full max-w-md p-8 md:p-10
+           flex flex-col space-y-8 text-gray-800" role="region" aria-labelledby="weather-app-label">
+
+    <!-- App Title and City Selector -->
+    <section id="weather-app-label" class="flex flex-col items-center space-y-4">
+      <h1 id="city" class="text-4xl font-extrabold tracking-tight text-blue-700">Paris</h1>
+
+      <label for="city-select" class="sr-only">Choose a city</label>
+      <select id="city-select" aria-describedby="city-select-desc" class="w-48 md:w-56 rounded-lg border border-gray-300 px-4 py-2 text-gray-700 text-lg font-semibold shadow-sm
+               focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+        <option value="Paris">Paris</option>
+        <option value="London">London</option>
+        <option value="New York">New York</option>
+        <option value="Tokyo">Tokyo</option>
+        <option value="Delhi">Delhi</option>
+        <!-- Add more cities here if required -->
+      </select>
+
+      <p id="time" class="text-sm text-gray-500 font-medium tracking-wide mt-2">Loading time...</p>
+    </section>
+
+    <!-- Weather Card -->
+    <section
+      class="bg-gradient-to-br from-blue-100 to-blue-50 rounded-2xl shadow-inner p-6 flex flex-col items-center space-y-4">
+
+      <div class="relative w-32 h-32 md:w-36 md:h-36">
+        <img src="cloud.png" alt="Weather Icon" id="weather-icon" class="w-full h-full object-contain" loading="lazy">
+        <h2 id="temperature"
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-4 text-6xl md:text-7xl font-extrabold text-blue-900 drop-shadow-lg select-none"
+          aria-live="polite">
+          --
+        </h2>
       </div>
-      <p id="time">Tuesday 9:00 AM</p>
-    </div>
-    <div class="weather-card">
-      <div class="weather-icon">
-        <img src="cloud.png" alt="Cloud Icon" id="weather-icon">
-        <h2 id="temperature">55°C</h2>
+
+      <p id="condition" class="text-xl md:text-2xl font-semibold text-blue-600 capitalize select-text tracking-wide">
+        Loading...
+      </p>
+
+    </section>
+
+    <!-- Details Grid -->
+    <section class="grid grid-cols-2 gap-y-4 gap-x-6 text-gray-700 text-sm md:text-base">
+
+      <div class="flex flex-col space-y-1">
+        <p class="font-semibold text-blue-800">Sunrise</p>
+        <p id="sunrise" class="select-text">--</p>
       </div>
-      <div class="weather-info">
-        <p id="condition">Rain Shower</p>
+
+      <div class="flex flex-col space-y-1">
+        <p class="font-semibold text-blue-800">Wind</p>
+        <p id="wind" class="select-text">--</p>
       </div>
-    </div>
-    <div class="details">
-      <div>
-        <p>Sunrise</p>
-        <p id="sunrise">6:00</p>
+
+      <div class="flex flex-col space-y-1">
+        <p class="font-semibold text-blue-800">Temperature Range</p>
+        <p id="temp-min-max" class="select-text">-- / --</p>
       </div>
-      <div>
-        <p>Wind</p>
-        <p id="wind">10 m/s</p>
+
+      <div class="flex flex-col space-y-1">
+        <p class="font-semibold text-blue-800">Air Quality Index</p>
+        <p id="aqi" class="select-text">--</p>
       </div>
-      <div>
-        <p>Temperature</p>
-        <p id="temp-min-max">49°C</p>
+
+      <div class="col-span-2 flex flex-col space-y-1">
+        <p class="font-semibold text-blue-800">Weather Alerts</p>
+        <p id="alerts" class="select-text">Loading...</p>
       </div>
-      <div>
-        <p>Air Quality Index</p>
-        <p id="aqi">Good</p>
-      </div>
-      <div>
-        <p>Weather Alerts</p>
-        <p id="alerts">No alerts</p>
-      </div>
-    </div>
-  </div>
+
+    </section>
+
+  </main>
+
+  <!-- Your custom JS logic -->
   <script src="script.js"></script>
 </body>
+
 </html>

@@ -44,7 +44,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-size: 1.5rem; /* Reduced font size */
+  font-size: 1.5rem;
+  /* Reduced font size */
   color: #333;
 }
 
@@ -55,7 +56,8 @@ body {
 
 .weather-info p {
   margin: 0;
-  font-size: 0.9rem; /* Reduced font size */
+  font-size: 0.9rem;
+  /* Reduced font size */
   color: #777;
 }
 
@@ -64,7 +66,8 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   padding: 0 10px;
-  font-size: 0.8rem; /* Reduced font size */
+  font-size: 0.8rem;
+  /* Reduced font size */
   color: #555;
 }
 
